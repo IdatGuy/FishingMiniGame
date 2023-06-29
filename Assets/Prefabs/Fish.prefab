@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 758255265464637486}
   - component: {fileID: 6695571424085323184}
   - component: {fileID: 5287098073000863076}
-  - component: {fileID: 7499687431448715135}
+  - component: {fileID: 2826466532590315521}
   - component: {fileID: 7666080495076830938}
   m_Layer: 6
   m_Name: Fish
@@ -102,8 +102,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &7499687431448715135
-SphereCollider:
+--- !u!136 &2826466532590315521
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -112,8 +112,9 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
   m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7666080495076830938
 MonoBehaviour:
