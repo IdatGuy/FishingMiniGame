@@ -7,85 +7,45 @@ using UnityEngine.Pool;
 
 public class FishSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject fishPrefab;
+    [SerializeField] private Transform waterTransform;
 
-    private Dictionary<GameObject, bool> baitSpawnAvailability = new Dictionary<GameObject, bool>();
-    private Dictionary<GameObject, Vector3> fishSpawnPositions = new Dictionary<GameObject, Vector3>();
-    private List<GameObject> fishPool = new List<GameObject>();
-
-    private void Update()
+    public void OnBaitTriggerChange(bool entered, GameObject who)
     {
-        // this is probably really inefficient
-        for (int i = fishSpawnPositions.Count - 1; i >= 0; i--)
+        if(!who.TryGetComponent(out Bait bait))
         {
-            KeyValuePair<GameObject, Vector3> kvp = fishSpawnPositions.ElementAt(i);
-            GameObject obj = kvp.Key;
-            Vector3 spawnPosition = kvp.Value;
-
-            if (obj.transform.position.y < spawnPosition.y)
-            {
-                fishSpawnPositions.Remove(obj);
-                obj.SetActive(false);
-            }
+            Debug.Log("not bait");
+            return;
+        }
+        if (entered)
+        {
+            Debug.Log("Fish spawner trying to spawn");
+            bait.TrySpawnFish(waterTransform.position);
+        }
+        else if (!entered)
+        {
+            Debug.Log("Fish spawner cancelling spawn");
+            bait.CancelSpawnFish();
         }
     }
-    private void OnTriggerEnter(Collider other)
+
+    /*private void OnTriggerEnter(Collider other)
     {
+        // Check if the object entering the trigger is the bait
         if (other.CompareTag("Bait"))
         {
-            if (!baitSpawnAvailability.ContainsKey(other.gameObject))
-            {
-                baitSpawnAvailability.Add(other.gameObject, true);
-                StartCoroutine(SpawnFishWithDelay(other.gameObject));
-            }
-            else if (baitSpawnAvailability[other.gameObject])
-            {
-                StartCoroutine(SpawnFishWithDelay(other.gameObject));
-            }
+            // Trigger the fish spawning logic for this bait
+            Bait bait = other.GetComponent<Bait>();
+            bait.TrySpawnFish(waterTransform.position);
         }
     }
 
-    private IEnumerator SpawnFishWithDelay(GameObject bait)
+    private void OnTriggerExit(Collider other)
     {
-        baitSpawnAvailability[bait.gameObject] = false;
-
-        // Wait for a random duration between 2 and 8 seconds
-        float delay = Random.Range(2f, 8f);
-        yield return new WaitForSeconds(delay);
-
-        // Calculate spawn position
-        Vector3 spawnPosition = new Vector3(bait.transform.position.x + Random.Range(-5f, 5f), transform.position.y - 5, bait.transform.position.z + Random.Range(-5f, 5f));
-        Quaternion spawnRotation = Quaternion.LookRotation(bait.transform.position - spawnPosition, Vector3.up);
-
-        // Spawn fish // CURRENTLY NOT WORKING. FISH ARE NEVER REUSED
-        GameObject fishObject;
-        if (fishPool.Count > 0)
+        // Check if the object exiting the trigger is the bait
+        if (other.CompareTag("Bait"))
         {
-            fishObject = GetFirstInactiveObject(fishPool);
-            if(fishObject != null)
-            {
-            fishObject.SetActive(true);
-            fishObject.transform.position = spawnPosition;
-            fishObject.transform.rotation = spawnRotation;
-            }
+            Bait bait = other.GetComponent<Bait>();
+            bait.CancelSpawnFish();
         }
-        else
-        {
-            fishObject = Instantiate(fishPrefab, spawnPosition, spawnRotation);
-        }
-
-        fishSpawnPositions.Add(fishObject, spawnPosition);
-    }
-    public GameObject GetFirstInactiveObject(List<GameObject> objects)
-    {
-        foreach (GameObject obj in objects)
-        {
-            if (!obj.activeSelf)
-            {
-                return obj;
-            }
-        }
-
-        return null; // If no inactive object is found
-    }
+    }*/
 }

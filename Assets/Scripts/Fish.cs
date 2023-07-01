@@ -6,65 +6,60 @@ using UnityEngine.Events;
 public class Fish : MonoBehaviour
 {
     [Header("Health")]
-    [SerializeField] private HealthConfigSO _healthConfigSO;
-    [SerializeField] private HealthSO _currentHealthSO;
+    [SerializeField] private int hitsToCapture;
+    private int currentHitsToCapture;
 
-    [SerializeField] private float startForce = 20f;
+    [Header("Rigidbody stuff")]
+    [SerializeField] private float startForce;
+    [SerializeField] private float startTorque;
     private Rigidbody rb;
 
     [SerializeField] private float hitSpreadAngle;
     [SerializeField] private float hitForce;
 
-    public bool IsDead { get; set; }
-
-    public event UnityAction OnDie;
+    private Vector3 spawnPosition;
     private void Awake()
     {
-        //If the HealthSO hasn't been provided in the Inspector (as it's the case for the player),
-        //we create a new SO unique to this instance of the component. This is typical for enemies.
-        if (_currentHealthSO == null)
-        {
-            _currentHealthSO = ScriptableObject.CreateInstance<HealthSO>();
-            _currentHealthSO.SetMaxHealth(_healthConfigSO.InitialHealth);
-            _currentHealthSO.SetCurrentHealth(_healthConfigSO.InitialHealth);
-        }
         rb = GetComponent<Rigidbody>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        rb.AddForce(transform.forward * (startForce * 10f));
+        currentHitsToCapture = hitsToCapture;
+        spawnPosition = transform.position;
+        rb.AddForce(transform.forward * startForce);
+        rb.AddTorque(transform.right * startTorque);
     }
-
+    private void Update()
+    {
+        if (spawnPosition.y - 5f >= transform.position.y)
+        {
+            Destroy(gameObject);
+        }
+    }
     public void ReceiveAnAttack(int damage)
     {
-        if (IsDead)
-            return;
-
-        _currentHealthSO.InflictDamage(damage);
-
-        if (_currentHealthSO.CurrentHealth <= 0)
+        if(currentHitsToCapture <= 0)
         {
-            IsDead = true;
-
-            if (OnDie != null)
-                OnDie.Invoke();
-
-            //_currentHealthSO.SetCurrentHealth(_healthConfigSO.InitialHealth);
+            KillFish();
         }
         else
         {
-            //take the hit then get launched in a new direction
+            currentHitsToCapture--;
             HitFish();
         }
     }
     private void HitFish()
     {
-        Vector3 hitDirection = GetHitDirection();
+        Vector3 hitDirection = GetRandomHitDirection();
         rb.AddForce(hitDirection * hitForce);
     }
-
-    private Vector3 GetHitDirection()
+    private void KillFish()
+    {
+        //play a special particle effect
+        Destroy(gameObject);
+    }
+    private Vector3 GetRandomHitDirection()
     {
         Quaternion randomRotation = Quaternion.Euler(Random.Range(-hitSpreadAngle, hitSpreadAngle), Random.Range(-hitSpreadAngle, hitSpreadAngle), 0f);
         Vector3 direction = Vector3.up;
