@@ -27,25 +27,4 @@ public class FishSpawner : MonoBehaviour
             bait.CancelSpawnFish();
         }
     }
-
-    /*private void OnTriggerEnter(Collider other)
-    {
-        // Check if the object entering the trigger is the bait
-        if (other.CompareTag("Bait"))
-        {
-            // Trigger the fish spawning logic for this bait
-            Bait bait = other.GetComponent<Bait>();
-            bait.TrySpawnFish(waterTransform.position);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        // Check if the object exiting the trigger is the bait
-        if (other.CompareTag("Bait"))
-        {
-            Bait bait = other.GetComponent<Bait>();
-            bait.CancelSpawnFish();
-        }
-    }*/
 }

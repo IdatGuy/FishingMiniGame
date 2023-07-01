@@ -10,7 +10,7 @@ using UnityEngine.Windows;
 public class PlayerController : MonoBehaviour
 {
     [Header("Player Movement")]
-    [SerializeField] private InputReader _inputReader = default;
+    [SerializeField] private InputReader _inputReader;
     [SerializeField] private float movementSpeed = 10f;
     [SerializeField] private float rotationSpeed = 10f;
     private CharacterController _characterController;
@@ -19,39 +19,30 @@ public class PlayerController : MonoBehaviour
 
     [Header("Attacking")]
     [SerializeField] private GameObject _magicProjectilePrefab;
-    private bool canAttack;
+    [SerializeField] private Transform _baitSpawnTransform;
     private bool aimInput;
 
     [Header("Cinemachine")]
     [SerializeField] private GameObject _cinemachine;
     [SerializeField] private GameObject _mainCamera;
     [SerializeField] private GameObject _aimCamera;
-
-    [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
     [SerializeField] private GameObject _cinemachineCameraTarget;
-
     [SerializeField] private float cameraSpeed = 10;
-
-    [Tooltip("How far in degrees can you move the camera up")]
-    [SerializeField] private float TopClamp = 70.0f;
-
-    [Tooltip("How far in degrees can you move the camera down")]
-    [SerializeField] private float BottomClamp = -30.0f;
-
-    [SerializeField] public bool InvertY = false;
-    [SerializeField] public bool InvertX = false;
-    [SerializeField] private bool LockCameraPosition = false;
-
+    [SerializeField] private float topClamp = 70.0f;
+    [SerializeField] private float bottomClamp = -30.0f;
+    [SerializeField] public bool invertY = false;
+    [SerializeField] public bool invertX = false;
+    [SerializeField] private bool lockCameraPosition = false;
     private float _cinemachineTargetYaw;
     private float _cinemachineTargetPitch;
     private const float _threshold = 0.01f;
+    private Vector2 screenCenter;
 
-    private Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
     [SerializeField] private LayerMask aimColliderLayerMask;
 
     [Header("Temporary Bait Stuff")]
     [SerializeField] private GameObject _baitPrefab;
-    [SerializeField] private Transform _baitSpawnTransform;
+
 
     private void Awake()
     {
@@ -64,11 +55,8 @@ public class PlayerController : MonoBehaviour
         _inputReader.AimEvent += OnAimInitiated;
         _inputReader.AimCanceledEvent += OnAimCanceled;
         _inputReader.AttackEvent += OnStartedAttack;
-        //_inputReader.AttackCanceledEvent += OnCanceledAttack;
         _inputReader.SpawnBaitEvent += OnSpawnBait;
     }
-
-    //Removes all listeners to the events coming from the InputReader script
     private void OnDisable()
     {
         _inputReader.MoveEvent -= OnMove;
@@ -76,7 +64,6 @@ public class PlayerController : MonoBehaviour
         _inputReader.AimEvent -= OnAimInitiated;
         _inputReader.AimCanceledEvent -= OnAimCanceled;
         _inputReader.AttackEvent -= OnStartedAttack;
-        //_inputReader.AttackCanceledEvent -= OnCanceledAttack;
         _inputReader.SpawnBaitEvent -= OnSpawnBait;
     }
     // Start is called before the first frame update
@@ -85,6 +72,7 @@ public class PlayerController : MonoBehaviour
         _inputReader.EnableGameplayInput();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
     }
 
     // Update is called once per frame
@@ -103,19 +91,24 @@ public class PlayerController : MonoBehaviour
         {
             inputDir = _cinemachine.transform.forward * _inputPlayerVector.y + _cinemachine.transform.right * _inputPlayerVector.x;
             inputDir.y = 0f;
-                Quaternion targetRotation;
+
+            Quaternion targetRotation;
+
             if (inputDir != Vector3.zero && !aimInput)
             {
                 targetRotation = Quaternion.LookRotation(inputDir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
             }
             else if(aimInput)
             {
                 Vector3 aimInputDirection = _cinemachineCameraTarget.transform.forward;
                 aimInputDirection.y = 0f;
                 targetRotation = Quaternion.LookRotation(aimInputDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
             }
+            else
+            {
+                targetRotation = Quaternion.LookRotation(inputDir);
+            }
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
         else
         {
@@ -123,21 +116,14 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning("No gameplay camera in the scene. Movement orientation will not be correct.");
             inputDir = new Vector3(_inputPlayerVector.x, 0f, _inputPlayerVector.y);
         }
+
         //Fix to avoid getting a Vector3.zero vector, which would result in the player turning to x:0, z:0
         if (_inputPlayerVector.sqrMagnitude == 0f)
             inputDir = transform.forward * (inputDir.magnitude + .01f);
 
         // Calculate movement
-        Vector3 movement;
-        if (_characterController.isGrounded)
-        {
-            movement = inputDir * movementSpeed;
-        }
-        else
-        {
-            movement = inputDir * (movementSpeed / 2f);
-        }
-        
+        Vector3 movement = inputDir * (movementSpeed * (_characterController.isGrounded ? 1f : 0.5f));
+
         movement += Physics.gravity;
         movement *= Time.deltaTime;
 
@@ -146,15 +132,15 @@ public class PlayerController : MonoBehaviour
     private void CameraMovement()
     {
         // if there is an input and camera position is not fixed
-        if (_inputCameraVector.sqrMagnitude >= _threshold && !LockCameraPosition)
+        if (_inputCameraVector.sqrMagnitude >= _threshold && !lockCameraPosition)
         {
-            _cinemachineTargetYaw += _inputCameraVector.x * (InvertX ? -1f : 1f) * cameraSpeed * Time.deltaTime;
-            _cinemachineTargetPitch += _inputCameraVector.y * (InvertY ? 1f : -1f) * cameraSpeed * Time.deltaTime;
+            _cinemachineTargetYaw += _inputCameraVector.x * (invertX ? -1f : 1f) * cameraSpeed * Time.deltaTime;
+            _cinemachineTargetPitch += _inputCameraVector.y * (invertY ? 1f : -1f) * cameraSpeed * Time.deltaTime;
         }
 
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, bottomClamp, topClamp);
 
         // Cinemachine will follow this target
         _cinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch, _cinemachineTargetYaw, 0.0f);
@@ -177,16 +163,8 @@ public class PlayerController : MonoBehaviour
     }
     private void SetActiveCamera()
     {
-        if (aimInput)
-        {
-            _aimCamera.SetActive(true);
-            _mainCamera.SetActive(false);
-        }
-        else
-        {
-            _aimCamera.SetActive(false);
-            _mainCamera.SetActive(true);
-        }
+        _aimCamera.SetActive(aimInput);
+        _mainCamera.SetActive(!aimInput);
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
@@ -203,5 +181,4 @@ public class PlayerController : MonoBehaviour
     private void OnAimCanceled() { aimInput = false; }
     private void OnSpawnBait() { SpawnBait(); }
     private void OnStartedAttack() { Shoot(); }
-    //private void OnCanceledAttack() { canAttack = true; }
 }

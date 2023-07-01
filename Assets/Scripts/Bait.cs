@@ -8,6 +8,7 @@ public class Bait : MonoBehaviour
     [SerializeField] private float startForce;
     [SerializeField] private float spawnPositionRange;
     [SerializeField] private GameObject fishPrefab;
+
     private GameObject instantiatedFish;
     private Vector3 currentWaterPosition;
     private Rigidbody rb;
@@ -36,9 +37,10 @@ public class Bait : MonoBehaviour
     {
         if (waterPosition == null)
         {
-            Debug.Log("Water position == null");
+            Debug.Log("Water position is null");
             return;
         }
+
         currentWaterPosition = waterPosition;
         StartCoroutine(RandomDelay());
     }
@@ -48,11 +50,6 @@ public class Bait : MonoBehaviour
     }
     private void SpawnFish()
     {
-        // Calculate spawn position
-        Vector3 spawnPosition = new Vector3(transform.position.x + Random.Range(-spawnPositionRange, spawnPositionRange), 
-            currentWaterPosition.y - 2f, transform.position.z + Random.Range(-spawnPositionRange, spawnPositionRange));
-        Quaternion spawnRotation = Quaternion.LookRotation(transform.position - spawnPosition, Vector3.up);
-
         // make sure we can still spawn the fish
         if(canSpawnFish == false)
         {
@@ -60,8 +57,18 @@ public class Bait : MonoBehaviour
             return;
         }
 
+        // Calculate spawn position
+        Vector3 spawnPosition = new Vector3(
+            transform.position.x + Random.Range(-spawnPositionRange, spawnPositionRange), 
+            currentWaterPosition.y - 2f, 
+            transform.position.z + Random.Range(-spawnPositionRange, spawnPositionRange)
+            );
+
+        Quaternion spawnRotation = Quaternion.LookRotation(transform.position - spawnPosition, Vector3.up);
+
         // if fish is instantiated correctly make sure it cant spawn fish again
-        if (instantiatedFish = Instantiate(fishPrefab, spawnPosition, spawnRotation))
+        instantiatedFish = Instantiate(fishPrefab, spawnPosition, spawnRotation);
+        if (instantiatedFish != null)
         {
             canSpawnFish = false;
         }
