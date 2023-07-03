@@ -6,6 +6,7 @@ using UnityEngine;
 public class Bait : MonoBehaviour
 {
     [SerializeField] private float startForce;
+    [Tooltip("The fish is spawned under the bait with a random x & z position Random.Range(-spawnPositionRange, spawnPositionRange)")]
     [SerializeField] private float spawnPositionRange;
     [SerializeField] private GameObject fishPrefab;
 
@@ -17,6 +18,7 @@ public class Bait : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
     }
     // Start is called before the first frame update
     void Start()
@@ -27,10 +29,14 @@ public class Bait : MonoBehaviour
     }
     public void OnAte(bool entered, GameObject who)
     {
-        if(instantiatedFish == who)
+        if (instantiatedFish == null)
+        {
+            return;
+        }
+        if (who.transform.root.gameObject == instantiatedFish.transform.root.gameObject)
         {
             // eventually play an animation or something
-            Destroy(gameObject);    
+            Destroy(gameObject);
         }
     }
     public void TrySpawnFish(Vector3 waterPosition)
@@ -51,16 +57,15 @@ public class Bait : MonoBehaviour
     private void SpawnFish()
     {
         // make sure we can still spawn the fish
-        if(canSpawnFish == false)
+        if (canSpawnFish == false)
         {
-            Debug.Log("This bait cant spawn fish");
             return;
         }
 
         // Calculate spawn position
         Vector3 spawnPosition = new Vector3(
-            transform.position.x + Random.Range(-spawnPositionRange, spawnPositionRange), 
-            currentWaterPosition.y - 2f, 
+            transform.position.x + Random.Range(-spawnPositionRange, spawnPositionRange),
+            currentWaterPosition.y - 2f,
             transform.position.z + Random.Range(-spawnPositionRange, spawnPositionRange)
             );
 

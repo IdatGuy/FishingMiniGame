@@ -6,26 +6,41 @@ using UnityEngine.Events;
 public class Fish : MonoBehaviour
 {
     [Header("Health")]
-    [SerializeField] private int hitsToCapture;
-    private int currentHitsToCapture;
+    private Health m_Health;
 
     [Header("Rigidbody stuff")]
     [SerializeField] private float startForce;
     [SerializeField] private float startTorque;
     private Rigidbody rb;
 
+    [Tooltip("VFX prefab to spawn upon impact")]
+    [SerializeField] private GameObject ImpactVfx;
+
+    [Tooltip("LifeTime of the VFX before being destroyed")]
+    [SerializeField] private float ImpactVfxLifetime = 5f;
     [SerializeField] private float hitSpreadAngle;
     [SerializeField] private float hitForce;
+    [SerializeField] private MeshRenderer meshRenderer;
 
     private Vector3 spawnPosition;
     private void Awake()
     {
+        m_Health = GetComponent<Health>();
         rb = GetComponent<Rigidbody>();
+    }
+    private void OnEnable()
+    {
+        m_Health.OnDie += OnDie;
+        m_Health.OnDamaged += OnDamaged;
+    }
+    private void OnDisable()
+    {
+        m_Health.OnDie -= OnDie;
+        m_Health.OnDamaged -= OnDamaged;
     }
     // Start is called before the first frame update
     void Start()
     {
-        currentHitsToCapture = hitsToCapture;
         spawnPosition = transform.position;
         rb.AddForce(transform.forward * startForce);
         rb.AddTorque(transform.right * startTorque);
@@ -37,27 +52,26 @@ public class Fish : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void ReceiveAnAttack(int damage)
-    {
-        if(currentHitsToCapture <= 0)
-        {
-            KillFish();
-        }
-        else
-        {
-            currentHitsToCapture--;
-            HitFish();
-        }
-    }
-    private void HitFish()
+    public void OnDamaged(float damage, GameObject damageSource)
     {
         Vector3 hitDirection = GetRandomHitDirection();
+        rb.velocity = Vector3.zero;
         rb.AddForce(hitDirection * hitForce);
     }
-    private void KillFish()
+    public void OnDie()
     {
-        //play a special particle effect
-        Destroy(gameObject);
+        rb.isKinematic = true;
+        meshRenderer.enabled = false;
+        // impact vfx
+        if (ImpactVfx)
+        {
+            GameObject impactVfxInstance = Instantiate(ImpactVfx, transform);
+            if (ImpactVfxLifetime > 0)
+            {
+                Destroy(impactVfxInstance.gameObject, ImpactVfxLifetime);
+                Destroy(gameObject, ImpactVfxLifetime);
+            }
+        }
     }
     private Vector3 GetRandomHitDirection()
     {

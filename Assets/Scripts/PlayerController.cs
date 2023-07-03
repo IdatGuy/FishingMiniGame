@@ -18,8 +18,11 @@ public class PlayerController : MonoBehaviour
     private Vector2 _inputCameraVector;
 
     [Header("Attacking")]
-    [SerializeField] private GameObject _magicProjectilePrefab;
+    public ProjectileStandard _magicProjectilePrefab;
     [SerializeField] private Transform _baitSpawnTransform;
+
+    [Tooltip("Angle for the cone in which the bullets will be shot randomly (0 means no spread at all)")]
+    public float BulletSpreadAngle = 0f;
     private bool aimInput;
 
     [Header("Cinemachine")]
@@ -97,18 +100,21 @@ public class PlayerController : MonoBehaviour
             if (inputDir != Vector3.zero && !aimInput)
             {
                 targetRotation = Quaternion.LookRotation(inputDir);
+                // this line gets repeated in the else if below and ive tried refactoring it to be out of the if 
+                // statement but it keeps giving the Vector3.zero vector error
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
             }
-            else if(aimInput)
+            else if (aimInput)
             {
                 Vector3 aimInputDirection = _cinemachineCameraTarget.transform.forward;
                 aimInputDirection.y = 0f;
                 targetRotation = Quaternion.LookRotation(aimInputDirection);
+                // this here yeah idk fuckin sue me its the only line that repeats itself in the entire script
+                // really dont gotta look in to it like idk why im still typing but i just fell like youre judging me for the 
+                // first comment so this is me making it extra clear that im in fact not insecure about the repitition
+                // you know what from now on im going to duplicate code more often just out of spite as my final fuck you
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
             }
-            else
-            {
-                targetRotation = Quaternion.LookRotation(inputDir);
-            }
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
         else
         {
@@ -147,15 +153,25 @@ public class PlayerController : MonoBehaviour
     }
     private void Shoot()
     {
-        if (aimInput)
+        if (!aimInput)
         {
-            Ray ray = Camera.main.ScreenPointToRay(screenCenter);
-            if(Physics.Raycast(ray, out RaycastHit raycast, 200f, aimColliderLayerMask))
-            {
-                Vector3 aimDirection = (raycast.point - _baitSpawnTransform.position).normalized;
-                Instantiate(_magicProjectilePrefab, _baitSpawnTransform.position, Quaternion.LookRotation(aimDirection, Vector3.up));
-            }
+            return; // No need to continue if there is no aim input
         }
+
+        RaycastHit hit;
+        Vector3 direction;
+
+        if (Physics.Raycast(_cinemachine.transform.position, _cinemachine.transform.forward, out hit, Mathf.Infinity))
+        {
+            direction = hit.point - _baitSpawnTransform.position; // Calculate the direction based on the hit point
+        }
+        else
+        {
+            direction = (_cinemachine.transform.position + _cinemachine.transform.forward * 20f) - _baitSpawnTransform.position; // Use a point far ahead if no hit point is found
+        }
+
+        ProjectileStandard newProjectile = Instantiate(_magicProjectilePrefab, _baitSpawnTransform.position, Quaternion.LookRotation(direction));
+        newProjectile.Shoot(this);
     }
     private void SpawnBait()
     {
@@ -166,7 +182,6 @@ public class PlayerController : MonoBehaviour
         _aimCamera.SetActive(aimInput);
         _mainCamera.SetActive(!aimInput);
     }
-
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
         if (lfAngle < -360f) lfAngle += 360f;

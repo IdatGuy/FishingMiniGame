@@ -13,17 +13,14 @@ public class FishSpawner : MonoBehaviour
     {
         if(!who.TryGetComponent(out Bait bait))
         {
-            Debug.Log("not bait");
             return;
         }
         if (entered)
         {
-            Debug.Log("Fish spawner trying to spawn");
             bait.TrySpawnFish(waterTransform.position);
         }
         else if (!entered)
         {
-            Debug.Log("Fish spawner cancelling spawn");
             bait.CancelSpawnFish();
         }
     }

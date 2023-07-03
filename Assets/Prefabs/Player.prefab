@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1203205058961937140}
   - component: {fileID: 1330933689247695888}
   - component: {fileID: 2787824838079576327}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -84,22 +84,23 @@ MonoBehaviour:
   _inputReader: {fileID: 11400000, guid: a45110984d5435642aff6393620faaba, type: 2}
   movementSpeed: 10
   rotationSpeed: 10
-  _magicProjectilePrefab: {fileID: 0}
+  _magicProjectilePrefab: {fileID: 7127072827737951890, guid: 8a6ed2981b1ae374ebd2d69545c578be, type: 3}
+  _baitSpawnTransform: {fileID: 7416286546401686212}
+  BulletSpreadAngle: 0
   _cinemachine: {fileID: 0}
   _mainCamera: {fileID: 0}
   _aimCamera: {fileID: 0}
   _cinemachineCameraTarget: {fileID: 4409408244533148749}
   cameraSpeed: 15
-  TopClamp: 70
-  BottomClamp: -30
-  InvertY: 0
-  InvertX: 0
-  LockCameraPosition: 0
+  topClamp: 80
+  bottomClamp: -65
+  invertY: 0
+  invertX: 0
+  lockCameraPosition: 0
   aimColliderLayerMask:
     serializedVersion: 2
-    m_Bits: 24
+    m_Bits: 251
   _baitPrefab: {fileID: 4783566861864037568, guid: 593ecfc486ece13488a2d705dfe7c7f1, type: 3}
-  _baitSpawnTransform: {fileID: 7416286546401686212}
 --- !u!1 &4409408244533148749
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,7 +110,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8147213333973130694}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: CameraRoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +141,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7416286546401686212}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: BaitSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,11 +216,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7261638824665288447, guid: 3f6e01791c2fd82428684ef2104e696d, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7261638826300546289, guid: 3f6e01791c2fd82428684ef2104e696d, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8563927659558387809, guid: 3f6e01791c2fd82428684ef2104e696d, type: 3}
       propertyPath: m_Name
@@ -227,9 +228,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8563927659558387809, guid: 3f6e01791c2fd82428684ef2104e696d, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3567817975421441558, guid: 3f6e01791c2fd82428684ef2104e696d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3f6e01791c2fd82428684ef2104e696d, type: 3}
 --- !u!4 &3266582608465069999 stripped
 Transform:
