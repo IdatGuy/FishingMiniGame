@@ -42,15 +42,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SpawnBait",
-                    "type": "Button",
-                    "id": "83454d44-a9fa-4bd9-80e8-7ca345af24b0",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Look",
                     "type": "Value",
                     "id": "eb10ede4-1efb-4fe2-8e9e-ee93c8c98e69",
@@ -58,6 +49,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "SpawnBaitOne",
+                    "type": "Value",
+                    "id": "83454d44-a9fa-4bd9-80e8-7ca345af24b0",
+                    "expectedControlType": "Integer",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "SpawnBaitTwo",
+                    "type": "Button",
+                    "id": "73101da2-813b-44a2-aef2-e8fabb16f703",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpawnBaitThree",
+                    "type": "Button",
+                    "id": "7b905e8d-fb40-4c3c-ae71-924c7ec4bf11",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpawnBaitFour",
+                    "type": "Button",
+                    "id": "61435a06-9489-4b90-9b86-d91f7f2e20a6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -167,7 +194,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SpawnBait",
+                    "action": "SpawnBaitOne",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -179,6 +206,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8cddab83-4238-43d0-8546-dc55a721c9f3",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnBaitTwo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a60cb8c2-5c6b-4f82-af10-929cb3009b8c",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnBaitThree",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "feabd02d-676c-417c-865c-8eb0cb902954",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpawnBaitFour",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

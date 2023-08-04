@@ -64,15 +64,6 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SpawnBait"",
-                    ""type"": ""Button"",
-                    ""id"": ""83454d44-a9fa-4bd9-80e8-7ca345af24b0"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Look"",
                     ""type"": ""Value"",
                     ""id"": ""eb10ede4-1efb-4fe2-8e9e-ee93c8c98e69"",
@@ -80,6 +71,42 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SpawnBaitOne"",
+                    ""type"": ""Value"",
+                    ""id"": ""83454d44-a9fa-4bd9-80e8-7ca345af24b0"",
+                    ""expectedControlType"": ""Integer"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SpawnBaitTwo"",
+                    ""type"": ""Button"",
+                    ""id"": ""73101da2-813b-44a2-aef2-e8fabb16f703"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpawnBaitThree"",
+                    ""type"": ""Button"",
+                    ""id"": ""7b905e8d-fb40-4c3c-ae71-924c7ec4bf11"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpawnBaitFour"",
+                    ""type"": ""Button"",
+                    ""id"": ""61435a06-9489-4b90-9b86-d91f7f2e20a6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -189,7 +216,7 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SpawnBait"",
+                    ""action"": ""SpawnBaitOne"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -201,6 +228,39 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8cddab83-4238-43d0-8546-dc55a721c9f3"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpawnBaitTwo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a60cb8c2-5c6b-4f82-af10-929cb3009b8c"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpawnBaitThree"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""feabd02d-676c-417c-865c-8eb0cb902954"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpawnBaitFour"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -226,8 +286,11 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
         m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
-        m_Gameplay_SpawnBait = m_Gameplay.FindAction("SpawnBait", throwIfNotFound: true);
         m_Gameplay_Look = m_Gameplay.FindAction("Look", throwIfNotFound: true);
+        m_Gameplay_SpawnBaitOne = m_Gameplay.FindAction("SpawnBaitOne", throwIfNotFound: true);
+        m_Gameplay_SpawnBaitTwo = m_Gameplay.FindAction("SpawnBaitTwo", throwIfNotFound: true);
+        m_Gameplay_SpawnBaitThree = m_Gameplay.FindAction("SpawnBaitThree", throwIfNotFound: true);
+        m_Gameplay_SpawnBaitFour = m_Gameplay.FindAction("SpawnBaitFour", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -291,8 +354,11 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Attack;
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_Aim;
-    private readonly InputAction m_Gameplay_SpawnBait;
     private readonly InputAction m_Gameplay_Look;
+    private readonly InputAction m_Gameplay_SpawnBaitOne;
+    private readonly InputAction m_Gameplay_SpawnBaitTwo;
+    private readonly InputAction m_Gameplay_SpawnBaitThree;
+    private readonly InputAction m_Gameplay_SpawnBaitFour;
     public struct GameplayActions
     {
         private @GameInput m_Wrapper;
@@ -301,8 +367,11 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
         public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputAction @Aim => m_Wrapper.m_Gameplay_Aim;
-        public InputAction @SpawnBait => m_Wrapper.m_Gameplay_SpawnBait;
         public InputAction @Look => m_Wrapper.m_Gameplay_Look;
+        public InputAction @SpawnBaitOne => m_Wrapper.m_Gameplay_SpawnBaitOne;
+        public InputAction @SpawnBaitTwo => m_Wrapper.m_Gameplay_SpawnBaitTwo;
+        public InputAction @SpawnBaitThree => m_Wrapper.m_Gameplay_SpawnBaitThree;
+        public InputAction @SpawnBaitFour => m_Wrapper.m_Gameplay_SpawnBaitFour;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -324,12 +393,21 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
                 @Aim.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAim;
                 @Aim.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAim;
                 @Aim.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnAim;
-                @SpawnBait.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBait;
-                @SpawnBait.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBait;
-                @SpawnBait.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBait;
                 @Look.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLook;
                 @Look.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLook;
                 @Look.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnLook;
+                @SpawnBaitOne.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitOne;
+                @SpawnBaitOne.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitOne;
+                @SpawnBaitOne.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitOne;
+                @SpawnBaitTwo.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitTwo;
+                @SpawnBaitTwo.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitTwo;
+                @SpawnBaitTwo.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitTwo;
+                @SpawnBaitThree.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitThree;
+                @SpawnBaitThree.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitThree;
+                @SpawnBaitThree.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitThree;
+                @SpawnBaitFour.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitFour;
+                @SpawnBaitFour.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitFour;
+                @SpawnBaitFour.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnSpawnBaitFour;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -346,12 +424,21 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
-                @SpawnBait.started += instance.OnSpawnBait;
-                @SpawnBait.performed += instance.OnSpawnBait;
-                @SpawnBait.canceled += instance.OnSpawnBait;
                 @Look.started += instance.OnLook;
                 @Look.performed += instance.OnLook;
                 @Look.canceled += instance.OnLook;
+                @SpawnBaitOne.started += instance.OnSpawnBaitOne;
+                @SpawnBaitOne.performed += instance.OnSpawnBaitOne;
+                @SpawnBaitOne.canceled += instance.OnSpawnBaitOne;
+                @SpawnBaitTwo.started += instance.OnSpawnBaitTwo;
+                @SpawnBaitTwo.performed += instance.OnSpawnBaitTwo;
+                @SpawnBaitTwo.canceled += instance.OnSpawnBaitTwo;
+                @SpawnBaitThree.started += instance.OnSpawnBaitThree;
+                @SpawnBaitThree.performed += instance.OnSpawnBaitThree;
+                @SpawnBaitThree.canceled += instance.OnSpawnBaitThree;
+                @SpawnBaitFour.started += instance.OnSpawnBaitFour;
+                @SpawnBaitFour.performed += instance.OnSpawnBaitFour;
+                @SpawnBaitFour.canceled += instance.OnSpawnBaitFour;
             }
         }
     }
@@ -380,7 +467,10 @@ public partial class @GameInput : IInputActionCollection2, IDisposable
         void OnAttack(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
-        void OnSpawnBait(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnSpawnBaitOne(InputAction.CallbackContext context);
+        void OnSpawnBaitTwo(InputAction.CallbackContext context);
+        void OnSpawnBaitThree(InputAction.CallbackContext context);
+        void OnSpawnBaitFour(InputAction.CallbackContext context);
     }
 }

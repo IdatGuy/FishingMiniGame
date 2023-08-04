@@ -44,7 +44,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask aimColliderLayerMask;
 
     [Header("Temporary Bait Stuff")]
-    [SerializeField] private GameObject _baitPrefab;
+    [SerializeField] private GameObject _baitPrefabOne;
+    [SerializeField] private GameObject _baitPrefabTwo;
+    [SerializeField] private GameObject _baitPrefabThree;
+    [SerializeField] private GameObject _baitPrefabFour;
 
 
     private void Awake()
@@ -58,7 +61,10 @@ public class PlayerController : MonoBehaviour
         _inputReader.AimEvent += OnAimInitiated;
         _inputReader.AimCanceledEvent += OnAimCanceled;
         _inputReader.AttackEvent += OnStartedAttack;
-        _inputReader.SpawnBaitEvent += OnSpawnBait;
+        _inputReader.SpawnBaitEventOne += OnSpawnBaitOne;
+        _inputReader.SpawnBaitEventTwo += OnSpawnBaitTwo;
+        _inputReader.SpawnBaitEventThree += OnSpawnBaitThree;
+        _inputReader.SpawnBaitEventFour += OnSpawnBaitFour;
     }
     private void OnDisable()
     {
@@ -67,7 +73,10 @@ public class PlayerController : MonoBehaviour
         _inputReader.AimEvent -= OnAimInitiated;
         _inputReader.AimCanceledEvent -= OnAimCanceled;
         _inputReader.AttackEvent -= OnStartedAttack;
-        _inputReader.SpawnBaitEvent -= OnSpawnBait;
+        _inputReader.SpawnBaitEventOne -= OnSpawnBaitOne;
+        _inputReader.SpawnBaitEventTwo -= OnSpawnBaitTwo;
+        _inputReader.SpawnBaitEventThree -= OnSpawnBaitThree;
+        _inputReader.SpawnBaitEventFour -= OnSpawnBaitFour;
     }
     // Start is called before the first frame update
     void Start()
@@ -173,9 +182,21 @@ public class PlayerController : MonoBehaviour
         ProjectileStandard newProjectile = Instantiate(_magicProjectilePrefab, _baitSpawnTransform.position, Quaternion.LookRotation(direction));
         newProjectile.Shoot(this);
     }
-    private void SpawnBait()
+    private void SpawnBaitOne()
     {
-        Instantiate(_baitPrefab, _baitSpawnTransform.position, Quaternion.LookRotation(_baitSpawnTransform.forward, Vector3.up));
+        Instantiate(_baitPrefabOne, _baitSpawnTransform.position, Quaternion.LookRotation(_baitSpawnTransform.forward, Vector3.up));
+    }
+    private void SpawnBaitTwo()
+    {
+        Instantiate(_baitPrefabTwo, _baitSpawnTransform.position, Quaternion.LookRotation(_baitSpawnTransform.forward, Vector3.up));
+    }
+    private void SpawnBaitThree()
+    {
+        Instantiate(_baitPrefabThree, _baitSpawnTransform.position, Quaternion.LookRotation(_baitSpawnTransform.forward, Vector3.up));
+    }
+    private void SpawnBaitFour()
+    {
+        Instantiate(_baitPrefabFour, _baitSpawnTransform.position, Quaternion.LookRotation(_baitSpawnTransform.forward, Vector3.up));
     }
     private void SetActiveCamera()
     {
@@ -194,6 +215,9 @@ public class PlayerController : MonoBehaviour
     private void OnLook(Vector2 movement) { _inputCameraVector = movement; }
     private void OnAimInitiated() { aimInput = true; }
     private void OnAimCanceled() { aimInput = false; }
-    private void OnSpawnBait() { SpawnBait(); }
+    private void OnSpawnBaitOne() { SpawnBaitOne(); }
+    private void OnSpawnBaitTwo() { SpawnBaitTwo(); }
+    private void OnSpawnBaitThree() { SpawnBaitThree(); }
+    private void OnSpawnBaitFour() { SpawnBaitFour(); }
     private void OnStartedAttack() { Shoot(); }
 }

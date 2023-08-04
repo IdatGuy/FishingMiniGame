@@ -1,93 +1,69 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+[Serializable]
+public class FishData
+{
+    public GameObject fishPrefab;
+    [Range(0f, 1f)]
+    public float spawnChance;
+}
 
 [RequireComponent(typeof(Rigidbody))]
 public class Bait : MonoBehaviour
 {
+    [Header("Bait Settings")]
     [SerializeField] private float startForce;
-    [Tooltip("The fish is spawned under the bait with a random x & z position Random.Range(-spawnPositionRange, spawnPositionRange)")]
-    [SerializeField] private float spawnPositionRange;
-    [SerializeField] private GameObject fishPrefab;
 
-    private GameObject instantiatedFish;
-    private Vector3 currentWaterPosition;
+    // References and variables for managing fish spawning
+    [SerializeField] private float floatTime;
     private Rigidbody rb;
-    private bool canSpawnFish = true;
+    public bool canSpawnFish = true;
 
+    [Header("Fish Lists for Different Pool Types")]
+    [SerializeField] private List<FishData> water;
+    [SerializeField] private List<FishData> lava;
+    [SerializeField] private List<FishData> swamp;
+
+    // Dictionary for different pool types and their corresponding fish lists
+    public Dictionary<PoolType, List<FishData>> fishLists { get; private set; } = new Dictionary<PoolType, List<FishData>>();
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
+        rb.AddForce(transform.forward * startForce);
+        fishLists.Add(PoolType.Water, water);
+        fishLists.Add(PoolType.Lava, lava);
+        fishLists.Add(PoolType.Swamp, swamp);
     }
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(NoFishDelay());
-        rb.constraints = RigidbodyConstraints.FreezePositionY;
-        rb.AddForce(transform.forward * startForce);
     }
     public void OnAte(bool entered, GameObject who)
     {
-        if (instantiatedFish == null)
+        if (!who.transform.root.gameObject.TryGetComponent<Fish>(out Fish fish))
         {
+            Debug.Log("no fish");
             return;
         }
-        if (who.transform.root.gameObject == instantiatedFish.transform.root.gameObject)
+        if (fish.hasAte)
         {
-            // eventually play an animation or something
-            Destroy(gameObject);
-        }
-    }
-    public void TrySpawnFish(Vector3 waterPosition)
-    {
-        if (waterPosition == null)
-        {
-            Debug.Log("Water position is null");
+            Debug.Log("fish already ate");
             return;
         }
-
-        currentWaterPosition = waterPosition;
-        StartCoroutine(RandomDelay());
+        fish.hasAte = true;
+        fish.StartFloatFish(floatTime);
+        // eventually play an animation or something
+        Destroy(gameObject);
     }
-    public void CancelSpawnFish()
-    {
-        canSpawnFish = false;
-    }
-    private void SpawnFish()
-    {
-        // make sure we can still spawn the fish
-        if (canSpawnFish == false)
-        {
-            return;
-        }
 
-        // Calculate spawn position
-        Vector3 spawnPosition = new Vector3(
-            transform.position.x + Random.Range(-spawnPositionRange, spawnPositionRange),
-            currentWaterPosition.y - 2f,
-            transform.position.z + Random.Range(-spawnPositionRange, spawnPositionRange)
-            );
-
-        Quaternion spawnRotation = Quaternion.LookRotation(transform.position - spawnPosition, Vector3.up);
-
-        // if fish is instantiated correctly make sure it cant spawn fish again
-        instantiatedFish = Instantiate(fishPrefab, spawnPosition, spawnRotation);
-        if (instantiatedFish != null)
-        {
-            canSpawnFish = false;
-        }
-    }
-    private IEnumerator RandomDelay()
-    {
-        // Wait for a random duration between 2 and 8 seconds
-        float delay = Random.Range(2f, 8f);
-        yield return new WaitForSeconds(delay);
-        SpawnFish();
-    }
+    // Coroutine for handling the delay when no fish are spawned
     private IEnumerator NoFishDelay()
     {
-        yield return new WaitForSeconds(45f);
+        yield return new WaitForSeconds(30f);
         Debug.Log("wasnt able to spawn fish so i will die");
         Destroy(gameObject);
     }

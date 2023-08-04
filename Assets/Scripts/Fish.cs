@@ -21,6 +21,8 @@ public class Fish : MonoBehaviour
     [SerializeField] private float hitSpreadAngle;
     [SerializeField] private float hitForce;
     [SerializeField] private MeshRenderer meshRenderer;
+    public bool hasAte;
+    private bool isFloating;
 
     private Vector3 spawnPosition;
     private void Awake()
@@ -41,6 +43,8 @@ public class Fish : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hasAte = false;
+        isFloating = false;
         spawnPosition = transform.position;
         rb.AddForce(transform.forward * startForce);
         rb.AddTorque(transform.right * startTorque);
@@ -54,9 +58,9 @@ public class Fish : MonoBehaviour
     }
     public void OnDamaged(float damage, GameObject damageSource)
     {
-        Vector3 hitDirection = GetRandomHitDirection();
-        rb.velocity = Vector3.zero;
-        rb.AddForce(hitDirection * hitForce);
+        // Vector3 hitDirection = GetRandomHitDirection();
+        // rb.velocity = Vector3.zero;
+        // rb.AddForce(hitDirection * hitForce);
     }
     public void OnDie()
     {
@@ -72,6 +76,22 @@ public class Fish : MonoBehaviour
                 Destroy(gameObject, ImpactVfxLifetime);
             }
         }
+    }
+    public void StartFloatFish(float time)
+    {
+        if (!isFloating)
+        {
+            isFloating = true;
+            StartCoroutine(FloatFish(time));
+        }
+    }
+    private IEnumerator FloatFish(float time)
+    {
+        rb.useGravity = false;
+        rb.velocity = rb.velocity / 2f;
+        yield return new WaitForSeconds(time);
+        rb.useGravity = true;
+        isFloating = false;
     }
     private Vector3 GetRandomHitDirection()
     {

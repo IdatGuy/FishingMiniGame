@@ -18,7 +18,10 @@ public class InputReader : DescriptionBaseSO, GameInput.IGameplayActions //, Gam
     public event UnityAction AimCanceledEvent = delegate { };
     public event UnityAction AttackEvent = delegate { };
     public event UnityAction AttackCanceledEvent = delegate { };
-    public event UnityAction SpawnBaitEvent = delegate { };
+    public event UnityAction SpawnBaitEventOne = delegate { };
+    public event UnityAction SpawnBaitEventTwo = delegate { };
+    public event UnityAction SpawnBaitEventThree = delegate { };
+    public event UnityAction SpawnBaitEventFour = delegate { };
 
     private GameInput _gameInput;
 
@@ -27,7 +30,7 @@ public class InputReader : DescriptionBaseSO, GameInput.IGameplayActions //, Gam
         if (_gameInput == null)
         {
             _gameInput = new GameInput();
-            
+
             _gameInput.Gameplay.SetCallbacks(this);
             //_gameInput.Menus.SetCallBacks(this);
             //_gameInput.Cheats.SetCallbacks(this);
@@ -37,7 +40,7 @@ public class InputReader : DescriptionBaseSO, GameInput.IGameplayActions //, Gam
         //_gameInput.Cheats.Enable();
 #endif
     }
-    
+
     private void OnDisable()
     {
         DisableAllInput();
@@ -77,11 +80,32 @@ public class InputReader : DescriptionBaseSO, GameInput.IGameplayActions //, Gam
         if (context.phase == InputActionPhase.Canceled)
             JumpCanceledEvent.Invoke();
     }
-    public void OnSpawnBait(InputAction.CallbackContext context)
+    public void OnSpawnBaitOne(InputAction.CallbackContext context)
     {
-        if(context.phase == InputActionPhase.Performed)
+        if (context.phase == InputActionPhase.Performed)
         {
-        SpawnBaitEvent.Invoke();
+            SpawnBaitEventOne.Invoke();
+        }
+    }
+    public void OnSpawnBaitTwo(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SpawnBaitEventTwo.Invoke();
+        }
+    }
+    public void OnSpawnBaitThree(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SpawnBaitEventThree.Invoke();
+        }
+    }
+    public void OnSpawnBaitFour(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            SpawnBaitEventFour.Invoke();
         }
     }
     public void EnableGameplayInput()
